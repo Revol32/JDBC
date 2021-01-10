@@ -60,7 +60,6 @@ public class JdbcTemplatePublicAuction implements PublicAuction {
 
     @Override
     public Map<User, Double> getAvgItemCost() {
-        Map<User, Double> avgItemPrise = new HashMap<>();
         String query = "SELECT users.*,AVG(start_prise) FROM `items` INNER JOIN `users` ON items.user_id=users.user_id GROUP BY users.user_id";
         return jdbcTemplate.query(query, avgExtractor);
     }
