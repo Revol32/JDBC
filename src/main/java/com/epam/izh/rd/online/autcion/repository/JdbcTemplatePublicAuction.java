@@ -14,11 +14,13 @@ public class JdbcTemplatePublicAuction implements PublicAuction {
 
     @Override
     public List<Bid> getUserBids(long id) {
+        String sql = "SELECT * FROM `bids` WHERE `users_user_id`= ?";
         return emptyList();
     }
 
     @Override
     public List<Item> getUserItems(long id) {
+        String sql = "SELECT * FROM `items` WHERE `users_user_id`= ?";
         return emptyList();
     }
 
