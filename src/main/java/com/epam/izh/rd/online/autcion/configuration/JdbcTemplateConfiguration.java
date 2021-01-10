@@ -12,13 +12,6 @@ import javax.sql.DataSource;
 @ConfigurationProperties(prefix = "spring.datasource")
 public class JdbcTemplateConfiguration {
 
-    String url;
-
-    String driverClassName;
-
-    String username;
-
-    String password;
 
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
@@ -27,11 +20,6 @@ public class JdbcTemplateConfiguration {
 
     @Bean
     public DataSource dataSource() {
-        DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
-        dataSourceBuilder.driverClassName(driverClassName);
-        dataSourceBuilder.url(url);
-        dataSourceBuilder.username(username);
-        dataSourceBuilder.password(password);
-        return dataSourceBuilder.build();
+        return DataSourceBuilder.create().build();
     }
 }
