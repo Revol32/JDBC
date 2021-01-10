@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 
 @Configuration
-
+@ConfigurationProperties(prefix = "spring.datasource")
 public class JdbcTemplateConfiguration {
 
     @Bean
@@ -17,7 +17,7 @@ public class JdbcTemplateConfiguration {
         return new JdbcTemplate(dataSource);
     }
 
-    @ConfigurationProperties(prefix = "spring.datasource")
+
     @Bean
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();

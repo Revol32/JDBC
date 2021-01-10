@@ -60,38 +60,48 @@ public class JdbcTemplatePublicAuction implements PublicAuction {
 
     @Override
     public Map<User, Double> getAvgItemCost() {
-        String query = "SELECT users.*,AVG(start_prise) FROM `items` INNER JOIN `users` ON items.user_id=users.user_id GROUP BY users.user_id";
+        String query = "SELECT users.*,AVG(start_price) FROM `items` INNER JOIN `users` ON items.user_id=users.user_id GROUP BY users.user_id";
         return jdbcTemplate.query(query, avgExtractor);
     }
 
     @Override
     public Map<Item, Bid> getMaxBidsForEveryItem() {
-        String query = "SELECT `bid_id`,`bid_date`,MAX(bid_value),bids.item_id,bids.user_id,items.* FROM `bids` INNER JOIN items ON bids.item_id=items.item_id GROUP BY item_id";
-        return jdbcTemplate.query(query,itemBidExtractor);
+        String query = "SELECT `bid_id`,`bid_date`,MAX(bid_value),bids.item_id,bids.user_id,items.* " +
+                "FROM `bids` INNER JOIN items ON bids.item_id=items.item_id GROUP BY bids.bid_id";
+        return jdbcTemplate.query(query, itemBidExtractor);
     }
 
     @Override
     public boolean createUser(User user) {
-        return false;
+
+        return jdbcTemplate.update(
+                "INSERT INTO `users` (`user_id`, `full_name`, `billing_address`, `login`, `password`) VALUES (?,?,?,?,?)",
+                user.getUserId(), user.getFullName(), user.getBillingAddress(), user.getLogin(), user.getPassword()) != 0;
     }
 
     @Override
     public boolean createItem(Item item) {
-        return false;
+        return jdbcTemplate.update(
+                "INSERT INTO `items` (`item_id`, `title`, `description`, `start_price`, `bid_increment`, `start_date`, `stop_date`, `buy_it_now`, `user_id`)" +
+                        " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                item.getItemId(), item.getTitle(), item.getDescription(), item.getStartPrice(), item.getBidIncrement(), item.getStartDate(),
+                item.getStopDate(), item.getBuyItNow(), item.getUserId()) != 0;
     }
 
     @Override
     public boolean createBid(Bid bid) {
-        return false;
+        return jdbcTemplate.update(
+                "INSERT INTO `bids` (`bid_id`, `bid_date`, `bid_value`, `item_id`, `user_id`) VALUES (?, ?, ?, ?, ?)",
+                bid.getBidId(), bid.getBidDate(), bid.getBidValue(), bid.getItemId(), bid.getUserId()) != 0;
     }
 
     @Override
     public boolean deleteUserBids(long id) {
-        return false;
+        return jdbcTemplate.update("DELETE FROM `bids` WHERE `user_id`=?", id) != 0;
     }
 
     @Override
     public boolean doubleItemsStartPrice(long id) {
-        return false;
+        return jdbcTemplate.update("UPDATE `items` SET `start_price` = `start_price`*2 WHERE `user_id`=?", id) != 0;
     }
 }
