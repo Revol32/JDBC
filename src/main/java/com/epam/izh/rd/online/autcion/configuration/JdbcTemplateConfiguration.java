@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 @ConfigurationProperties(prefix = "spring.datasource")
 public class JdbcTemplateConfiguration {
 
-
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
