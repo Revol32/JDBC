@@ -28,9 +28,9 @@ public class ItemBidExtractor implements ResultSetExtractor<Map<Item, Bid>> {
                     resultSet.getLong("user_id"));
             Bid bid = new Bid(resultSet.getLong("bid_id"),
                     resultSet.getDate("bid_date").toLocalDate(),
-                    resultSet.getDouble("MAX(bid_value)"),
+                    resultSet.getDouble("bid_value"),
                     resultSet.getLong("item_id"),
-                    resultSet.getLong("user_id"));
+                    resultSet.getLong("biduser_id"));
             itemBidMap.put(item, bid);
         }
         return itemBidMap;
