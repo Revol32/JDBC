@@ -66,8 +66,15 @@ public class JdbcTemplatePublicAuction implements PublicAuction {
 
     @Override
     public Map<Item, Bid> getMaxBidsForEveryItem() {
-        String query = "SELECT `bid_id`,`bid_date`,MAX(bid_value),bids.item_id,bids.user_id,items.* " +
-                "FROM `bids` INNER JOIN items ON bids.item_id=items.item_id GROUP BY bids.bid_id";
+//        String query = "SELECT `bid_id`,`bid_date`, MAX(bid_value) as bid_value, bids.item_id, bids.user_id, items.* " +
+//                "FROM `bids` INNER JOIN items ON items.item_id=bids.item_id GROUP BY bids.bid_id  ";
+//        String query = "SELECT `bid_id`,`bid_date`, MAX(bid_value) as bid_value, bids.item_id, bids.user_id, items.* " +
+//                "FROM `bids` INNER JOIN items ON items.item_id=bids.item_id GROUP BY items.item_id, bids.bid_id  ";
+        String query = "SELECT items.*, x.* FROM items INNER JOIN " +
+                "(SELECT bids.`bid_id`,bids.bid_date,bids.bid_value, bids.user_id as biduser_id, y.* FROM bids INNER JOIN " +
+                "(SELECT MAX(bid_value) as maxbid,bids.item_id FROM `bids`GROUP BY bids.item_id) AS y " +
+                "ON bids.item_id = y.item_id AND bids.bid_value=y.maxbid GROUP BY bids.item_id) AS x " +
+                "ON items.item_id=x.item_id GROUP BY items.item_id;";
         return jdbcTemplate.query(query, itemBidExtractor);
     }
 
